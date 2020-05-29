@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
   /*----- GAME LOGIC VARIABLES -----*/
   const STARTING_TIME = 30;
   let remainingTime = 0;
-  let gameOver = false;
+  let gameOver = true;
   let countdown = null; // will hold countdown interval
 
   let wiresToCut = [];
@@ -42,13 +42,30 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       // for debugging
       console.log(wiresToCut);
-      countdown = setInterval(updateClock, 100);
+      countdown = setInterval(updateClock, 1000);
       resetBtn.disabled = true;
   }
 
   function wireClick(e) {
-      console.log("clicked wire box");
-      console.log(e.target.id);
+      console.log("you clicked " + e.target.id);
+      let color = e.target.id;
+      // if the game is not over and if the wire has not been cut
+      if (!gameOver && !wireState[color]) {
+          e.target.src = "img/cut-" + color + "-wire.png";
+          wireState[color] = true;
+          let wireIndex = wiresToCut.indexOf(color);
+          // if the wire has an index, it needs to be cut
+          if (wireIndex > -1) {
+              console.log("Correct!")
+              wiresToCut.splice(wireIndex, 1);
+              if (wiresToCut.length < 1) {
+                  endGame(true);
+              }
+          } else {
+              console.log("Bad news!");
+              endGame(false);
+          }
+      }
   }
 
   function updateClock() {
@@ -71,6 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
   }
 
-  
+
 
 })
